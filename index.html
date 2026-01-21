@@ -3,14 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <title>池上鄉萬安社區青銀共榮友善環境改善工程</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- Before/After Slider CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/twentytwentyjs@1.0.0/twentytwenty.css" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-event-move@2.0.0/jquery.event.move.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/twentytwentyjs@1.0.0/jquery.twentytwenty.min.js"></script>
+
+  <style>
+    body { margin:0; padding:0; font-family: sans-serif; }
+    #map { height: 80vh; width: 100%; }
+    h1, p { padding: 10px; }
+    .twentytwenty-container img { width: 100%; height: auto; }
+  </style>
 </head>
 <body>
+
   <h1>池上鄉萬安社區青銀共榮友善環境改善工程</h1>
-
-  <p>
-    本基地為萬安社區與萬安國小間的銜接空間，計畫目標如下：
-  </p>
-
+  <p>本基地為萬安社區與萬安國小間的銜接空間，計畫目標如下：</p>
   <ul>
     <li>串聯社區與校園，規劃通用步道</li>
     <li>整理既有設施，活化閒置戶外空間</li>
@@ -19,6 +35,45 @@
     <li>形塑地方亮點</li>
   </ul>
 
-  <p>點擊地圖點位以比較工程前後差異。</p>
+  <p>點擊地圖 Marker 以比較工程前後照片。</p>
+
+  <!-- 地圖 -->
+  <div id="map"></div>
+
+  <script>
+    // 建立地圖
+    var map = L.map('map').setView([23.0960,121.2186], 16); // 把座標改成你的基地中心點
+
+    // 加入 OpenStreetMap 圖資
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // 現場定位
+    map.locate({setView: true, maxZoom: 18});
+    function onLocationFound(e) {
+      L.marker(e.latlng).addTo(map)
+        .bindPopup("你的位置").openPopup();
+    }
+    map.on('locationfound', onLocationFound);
+
+    // 範例 Marker
+    var marker = L.marker([23.124, 121.317]).addTo(map);
+    marker.bindPopup(`
+      <div style="width:300px;">
+        <h4>測試點：施工前/施工後比對</h4>
+        <div class="twentytwenty-container">
+          <img src="1-BE.JPG" alt="施工前">
+          <img src="1-AF.jpg" alt="施工後">
+        </div>
+      </div>
+    `);
+
+    // 初始化 before/after slider
+    map.on('popupopen', function(e){
+      $(".twentytwenty-container").twentytwenty();
+    });
+  </script>
+
 </body>
 </html>
